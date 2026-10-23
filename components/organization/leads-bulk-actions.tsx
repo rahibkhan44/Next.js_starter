@@ -1,7 +1,7 @@
 "use client";
 
 import NiceModal from "@ebay/nice-modal-react";
-import { LeadStatus } from "@prisma/client";
+import { LeadStatus } from "@/lib/db/enums";
 import type * as React from "react";
 import { toast } from "sonner";
 import { ConfirmationModal } from "@/components/confirmation-modal";

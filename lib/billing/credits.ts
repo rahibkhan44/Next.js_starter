@@ -6,7 +6,7 @@ import type {
 	CreditTransaction,
 	Prisma,
 } from "@prisma/client";
-import { CreditTransactionType } from "@prisma/client";
+import { CreditTransactionType } from "@/lib/db/enums";
 import { prisma } from "@/lib/db";
 import { LoggerFactory } from "@/lib/logger/factory";
 

@@ -1,4 +1,4 @@
-import { MemberRole } from "@prisma/client";
+import { MemberRole } from "@/lib/db/enums";
 import { TRPCError } from "@trpc/server";
 import { appConfig } from "@/config/app.config";
 import { creditPackages } from "@/config/billing.config";

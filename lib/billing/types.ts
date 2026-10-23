@@ -1,4 +1,4 @@
-import type { BillingInterval, OrderStatus } from "@prisma/client";
+import type { BillingInterval, OrderStatus } from "@/lib/db/enums";
 
 /**
  * Subscription data stored in our database

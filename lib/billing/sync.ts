@@ -1,6 +1,7 @@
 import "server-only";
 
-import { CreditTransactionType, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import { CreditTransactionType } from "@/lib/db/enums";
 import { creditPackages } from "@/config/billing.config";
 import { addCredits } from "@/lib/billing/credits";
 import {

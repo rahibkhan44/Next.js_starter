@@ -1,7 +1,7 @@
 "use client";
 
 import NiceModal from "@ebay/nice-modal-react";
-import { LeadSource, LeadStatus } from "@prisma/client";
+import { LeadSource, LeadStatus } from "@/lib/db/enums";
 import type {
 	ColumnDef,
 	ColumnFiltersState,

@@ -1,4 +1,4 @@
-import { InvitationStatus } from "@prisma/client";
+import { InvitationStatus } from "@/lib/db/enums";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { APIError, createAuthMiddleware } from "better-auth/api";
@@ -32,7 +32,7 @@ export const auth = betterAuth({
 	trustedOrigins: authConfig.trustedOrigins,
 	appName: appConfig.appName,
 	database: prismaAdapter(prisma, {
-		provider: "postgresql",
+		provider: "sqlite",
 		usePlural: false,
 		transaction: true,
 	}),
@@ -89,30 +89,33 @@ export const auth = betterAuth({
 	},
 	emailAndPassword: {
 		enabled: true,
-		// If signup is enabled, we can't auto sign in the user, as the email is not verified yet.
-		autoSignIn: false,
-		requireEmailVerification: true,
+		autoSignIn: !env.RESEND_API_KEY,
+		requireEmailVerification: !!env.RESEND_API_KEY,
 		minPasswordLength: authConfig.minimumPasswordLength,
-		sendResetPassword: async ({ user, url }, _request) => {
-			await sendPasswordResetEmail({
-				recipient: user.email,
-				appName: appConfig.appName,
-				name: user.name,
-				resetPasswordLink: url,
-			});
-		},
+		sendResetPassword: env.RESEND_API_KEY
+			? async ({ user, url }, _request) => {
+					await sendPasswordResetEmail({
+						recipient: user.email,
+						appName: appConfig.appName,
+						name: user.name,
+						resetPasswordLink: url,
+					});
+				}
+			: undefined,
 	},
 	emailVerification: {
-		sendOnSignUp: true,
+		sendOnSignUp: !!env.RESEND_API_KEY,
 		autoSignInAfterVerification: true,
 		expiresIn: authConfig.verificationExpiresIn,
-		sendVerificationEmail: async ({ user: { email, name }, url }, _request) => {
-			await sendVerifyEmailAddressEmail({
-				recipient: email,
-				name,
-				verificationLink: url,
-			});
-		},
+		sendVerificationEmail: env.RESEND_API_KEY
+			? async ({ user: { email, name }, url }, _request) => {
+					await sendVerifyEmailAddressEmail({
+						recipient: email,
+						name,
+						verificationLink: url,
+					});
+				}
+			: undefined,
 	},
 	socialProviders: {
 		google: {

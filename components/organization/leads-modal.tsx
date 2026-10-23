@@ -1,7 +1,7 @@
 "use client";
 
 import NiceModal, { type NiceModalHocProps } from "@ebay/nice-modal-react";
-import { LeadSource, LeadStatus } from "@prisma/client";
+import { LeadSource, LeadStatus } from "@/lib/db/enums";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";

@@ -1,7 +1,7 @@
 "use client";
 
 import NiceModal from "@ebay/nice-modal-react";
-import { CreditTransactionType } from "@prisma/client";
+import { CreditTransactionType } from "@/lib/db/enums";
 import { format, isToday, isYesterday } from "date-fns";
 import {
 	AlertCircleIcon,

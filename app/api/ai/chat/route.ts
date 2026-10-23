@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai";
-import { streamText } from "ai";
+import { stepCountIs, streamText } from "ai";
 import { z } from "zod/v4";
 import {
 	type ChatModelId,
@@ -18,8 +18,10 @@ import {
 } from "@/lib/billing/credits";
 import { prisma } from "@/lib/db";
 import { logger } from "@/lib/logger";
+import { getAvailableTools } from "@/lib/services/ai/tool-registry";
+import { buildSystemPrompt } from "@/lib/services/ai/prompt-builder";
 
-export const maxDuration = 30;
+export const maxDuration = 60;
 
 // Extract allowed model IDs from shared config
 const ALLOWED_MODEL_IDS = chatModels.map((m) => m.id);
@@ -34,7 +36,7 @@ const chatRequestSchema = z.object({
 	messages: z.array(
 		z
 			.object({
-				role: z.enum(["user", "assistant", "system"]),
+				role: z.enum(["user", "assistant", "system", "tool"]),
 				content: z.string().optional(),
 			})
 			.passthrough(),
@@ -73,7 +75,7 @@ export async function POST(req: Request) {
 	}
 
 	// Validate request body
-	let messages: { role: "user" | "assistant" | "system"; content: string }[];
+	let messages: { role: "user" | "assistant" | "system" | "tool"; content: string }[];
 	let chatId: string | undefined;
 	let organizationId: string | undefined;
 	let selectedModel: ChatModelId = DEFAULT_CHAT_MODEL;
@@ -86,7 +88,6 @@ export async function POST(req: Request) {
 		organizationId = parsed.organizationId;
 
 		// Normalize messages to ensure proper content string for credit calculation and streamText
-		// The frontend might use 'parts' instead of 'content' for multimodal/edit support
 		messages = parsed.messages.map((msg) => {
 			let content = msg.content ?? "";
 
@@ -127,7 +128,6 @@ export async function POST(req: Request) {
 	}
 
 	// Verify user is a member of the organization before allowing access
-	// This prevents attackers from accessing other organizations' chats by passing arbitrary organizationId
 	if (organizationId) {
 		try {
 			await assertUserIsOrgMember(organizationId, session.user.id);
@@ -193,9 +193,43 @@ export async function POST(req: Request) {
 		}
 	}
 
+	// Build tools and system prompt for organization chats
+	// biome-ignore lint/suspicious/noExplicitAny: AI SDK tool types are complex
+	let tools: any;
+	let systemPrompt: string | undefined;
+
+	if (organizationId) {
+		try {
+			const org = await prisma.organization.findUnique({
+				where: { id: organizationId },
+				select: { name: true },
+			});
+
+			[tools, systemPrompt] = await Promise.all([
+				getAvailableTools(organizationId, session.user.id),
+				buildSystemPrompt({
+					userName: session.user.name,
+					userEmail: session.user.email,
+					organizationName: org?.name ?? "Unknown",
+					organizationId,
+				}),
+			]);
+		} catch (error) {
+			logger.error(
+				{ error, organizationId },
+				"Failed to build AI tools/prompt",
+			);
+			// Continue without tools - basic chat still works
+		}
+	}
+
 	const result = streamText({
 		model: openai(selectedModel),
-		messages,
+		system: systemPrompt,
+		// biome-ignore lint/suspicious/noExplicitAny: AI SDK message types differ from our normalized format
+		messages: messages as any,
+		tools,
+		stopWhen: stepCountIs(5), // Agentic loop: up to 5 tool call iterations
 		async onFinish({ text, usage }) {
 			const inputTokens = usage?.inputTokens ?? 0;
 			const outputTokens = usage?.outputTokens ?? 0;
@@ -232,7 +266,6 @@ export async function POST(req: Request) {
 					const errorMessage =
 						error instanceof Error ? error.message : "Unknown error";
 
-					// Log to failure table for later reconciliation
 					await logFailedDeduction({
 						organizationId,
 						amount: actualCost,

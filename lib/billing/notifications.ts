@@ -1,6 +1,6 @@
 import "server-only";
 
-import { MemberRole } from "@prisma/client";
+import { MemberRole } from "@/lib/db/enums";
 import { appConfig } from "@/config/app.config";
 import { prisma } from "@/lib/db";
 import {

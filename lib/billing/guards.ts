@@ -1,6 +1,6 @@
 import "server-only";
 
-import { SubscriptionStatus } from "@prisma/client";
+import { SubscriptionStatus } from "@/lib/db/enums";
 import { TRPCError } from "@trpc/server";
 import { billingConfig, type PlanLimits } from "@/config/billing.config";
 import { DEFAULT_PLAN_LIMITS, getPlanById } from "@/lib/billing/plans";

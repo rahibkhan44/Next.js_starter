@@ -1,9 +1,9 @@
+import { Prisma } from "@prisma/client";
 import {
 	CreditTransactionType,
 	OrderStatus,
-	Prisma,
 	SubscriptionStatus,
-} from "@prisma/client";
+} from "@/lib/db/enums";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";

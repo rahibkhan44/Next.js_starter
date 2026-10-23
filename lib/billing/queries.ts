@@ -8,14 +8,14 @@ import type {
 	Subscription,
 	SubscriptionItem,
 } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import {
 	type BillingInterval,
 	OrderStatus,
 	PriceModel,
 	PriceType,
-	Prisma,
 	SubscriptionStatus,
-} from "@prisma/client";
+} from "@/lib/db/enums";
 import type Stripe from "stripe";
 import {
 	getPlanByStripePriceId,

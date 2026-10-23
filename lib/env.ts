@@ -18,12 +18,15 @@ export const env = createEnv({
 		GOOGLE_CLIENT_SECRET: z.string().optional(),
 
 		// Database
-		POSTGRES_USER: z.string().default("postgres"),
-		POSTGRES_PASSWORD: z.string().default("password"),
-		POSTGRES_DB: z.string().default("database"),
-		POSTGRES_HOST: z.string().default("localhost"),
-		POSTGRES_PORT: z.string().default("5432"),
-		DATABASE_URL: z.string().url(),
+		DATABASE_URL: z.string().min(1),
+
+		// SmartFlow AI - Google Integrations
+		GOOGLE_INTEGRATION_CLIENT_ID: z.string().optional(),
+		GOOGLE_INTEGRATION_CLIENT_SECRET: z.string().optional(),
+		TOKEN_ENCRYPTION_KEY: z.string().optional(),
+
+		// SmartFlow AI - Gemini
+		GEMINI_API_KEY: z.string().optional(),
 
 		// Email
 		EMAIL_FROM: z.string().optional(),
@@ -107,12 +110,12 @@ export const env = createEnv({
 		BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
 		GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
 		GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-		POSTGRES_USER: process.env.POSTGRES_USER,
-		POSTGRES_PASSWORD: process.env.POSTGRES_PASSWORD,
-		POSTGRES_DB: process.env.POSTGRES_DB,
-		POSTGRES_HOST: process.env.POSTGRES_HOST,
-		POSTGRES_PORT: process.env.POSTGRES_PORT,
 		DATABASE_URL: process.env.DATABASE_URL,
+		GOOGLE_INTEGRATION_CLIENT_ID: process.env.GOOGLE_INTEGRATION_CLIENT_ID,
+		GOOGLE_INTEGRATION_CLIENT_SECRET:
+			process.env.GOOGLE_INTEGRATION_CLIENT_SECRET,
+		TOKEN_ENCRYPTION_KEY: process.env.TOKEN_ENCRYPTION_KEY,
+		GEMINI_API_KEY: process.env.GEMINI_API_KEY,
 		EMAIL_FROM: process.env.EMAIL_FROM,
 		RESEND_API_KEY: process.env.RESEND_API_KEY,
 		SENTRY_ORG: process.env.SENTRY_ORG,

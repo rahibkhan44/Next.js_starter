@@ -1,4 +1,4 @@
-import { UserRole } from "@prisma/client";
+import { UserRole } from "@/lib/db/enums";
 import { z } from "zod/v4";
 import { appConfig } from "@/config/app.config";
 

@@ -1,4 +1,4 @@
-import { LeadSource, LeadStatus } from "@prisma/client";
+import { LeadSource, LeadStatus } from "@/lib/db/enums";
 import { z } from "zod/v4";
 
 // Sortable fields for leads

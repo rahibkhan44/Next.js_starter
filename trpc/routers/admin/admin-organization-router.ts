@@ -1,5 +1,8 @@
 import type { Prisma } from "@prisma/client";
-import { InvitationStatus, type SubscriptionStatus } from "@prisma/client";
+import {
+	InvitationStatus,
+	type SubscriptionStatus,
+} from "@/lib/db/enums";
 import { TRPCError } from "@trpc/server";
 import { adjustCredits as adjustCreditsLib } from "@/lib/billing/credits";
 import {

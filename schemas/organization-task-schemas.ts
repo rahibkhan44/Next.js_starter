@@ -1,4 +1,4 @@
-import { TaskPriority, TaskStatus } from "@prisma/client";
+import { TaskPriority, TaskStatus } from "@/lib/db/enums";
 import { z } from "zod/v4";
 
 // List tasks with filters and pagination

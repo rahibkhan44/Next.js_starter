@@ -16,6 +16,7 @@ import { organizationAiRouter } from "@/trpc/routers/organization/organization-a
 import { organizationCreditRouter } from "@/trpc/routers/organization/organization-credit-router";
 import { organizationLeadRouter } from "@/trpc/routers/organization/organization-lead-router";
 import { organizationSubscriptionRouter } from "@/trpc/routers/organization/organization-subscription-router";
+import { organizationIntegrationRouter } from "./organization-integration-router";
 import { organizationTaskRouter } from "./organization-task-router";
 
 async function generateOrganizationSlug(name: string): Promise<string> {
@@ -129,6 +130,7 @@ export const organizationRouter = createTRPCRouter({
 	// Context-specific sub-routers
 	ai: organizationAiRouter,
 	credit: organizationCreditRouter,
+	integration: organizationIntegrationRouter,
 	lead: organizationLeadRouter,
 	subscription: organizationSubscriptionRouter,
 	task: organizationTaskRouter,
