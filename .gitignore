@@ -54,3 +54,7 @@ test-results/
 tests/e2e/debug/*.png
 tests/e2e/screenshots/
 tests/e2e/.auth/
+# local
+.vs/
+dev.db
+.claude/settings.local.json
